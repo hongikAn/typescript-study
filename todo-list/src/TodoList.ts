@@ -32,7 +32,7 @@ class TodoList {
     return document.querySelector(cssExp) as HTMLInputElement;
   }
 
-  add() {
+  private add() {
     const todoInput = this.inputElement.value;
     if (todoInput == '') {
       alert('Enter Item');
@@ -48,7 +48,7 @@ class TodoList {
     }
   }
 
-  deleteItem(eraseId: number) {
+  private deleteItem(eraseId: number) {
     const elementIndex = this.todoObjectList.findIndex(
       item => item.id === eraseId
     );
@@ -56,7 +56,7 @@ class TodoList {
     this.display();
   }
 
-  processUlEvent(e: Event) {
+  private processUlEvent(e: Event) {
     const clickedElementName = (e.target as HTMLElement).nodeName;
     const clickedElement = e.target as HTMLElement;
 
@@ -68,7 +68,7 @@ class TodoList {
     }
   }
 
-  toggleItem(liElement: HTMLElement) {
+  private toggleItem(liElement: HTMLElement) {
     const checkedId = liElement.getAttribute('data-id');
     const elementIndex = this.todoObjectList.findIndex(
       item => item.id === Number(checkedId)
@@ -82,7 +82,7 @@ class TodoList {
     }
   }
 
-  display() {
+  private display() {
     this.ulElement.innerHTML = '';
     this.todoObjectList.forEach(item => {
       const liElement = document.createElement('li');
