@@ -1,30 +1,54 @@
+interface todoItem {
+  id: number;
+  todoText: string;
+  isDone: boolean;
+}
+
 class TodoList {
-  constructor(ulSelector, buttonSelector) {
+  private todoObjectList: todoItem[];
+  private uuid: number;
+  private ulElement: HTMLElement;
+  private buttonElement: HTMLElement;
+  private inputElement: HTMLInputElement;
+  constructor(
+    ulSelector: string,
+    buttonSelector: string,
+    inputSelector: string
+  ) {
     this.uuid = 0;
     this.todoObjectList = [];
-    this.ulElement = document.querySelector(ulSelector);
+    this.ulElement = this.selectTag(ulSelector);
     this.ulElement.addEventListener('click', this.processUlEvent.bind(this));
-    this.buttonElement = document.querySelector(buttonSelector);
+    this.buttonElement = this.selectTag(buttonSelector);
     this.buttonElement.addEventListener('click', this.add.bind(this));
+    this.inputElement = this.selectInput(inputSelector);
+  }
+
+  private selectTag(cssExp: string): HTMLElement {
+    return document.querySelector(cssExp) as HTMLElement;
+  }
+
+  private selectInput(cssExp: string): HTMLInputElement {
+    return document.querySelector(cssExp) as HTMLInputElement;
   }
 
   add() {
-    const todoInput = document.querySelector('#myInput').value;
+    const todoInput = this.inputElement.value;
     if (todoInput == '') {
       alert('Enter Item');
     } else {
-      const todoObject = {
+      const todoObject: todoItem = {
         id: this.uuid++,
         todoText: todoInput,
         isDone: false,
       };
       this.todoObjectList.unshift(todoObject);
       this.display();
-      document.querySelector('#myInput').value = '';
+      this.inputElement.value = '';
     }
   }
 
-  deleteItem(eraseId) {
+  deleteItem(eraseId: number) {
     const elementIndex = this.todoObjectList.findIndex(
       item => item.id === eraseId
     );
@@ -32,9 +56,9 @@ class TodoList {
     this.display();
   }
 
-  processUlEvent(e) {
-    const clickedElementName = e.target.nodeName;
-    const clickedElement = e.target;
+  processUlEvent(e: Event) {
+    const clickedElementName = (e.target as HTMLElement).nodeName;
+    const clickedElement = e.target as HTMLElement;
 
     if (clickedElementName === 'LI') {
       this.toggleItem(clickedElement);
@@ -44,7 +68,7 @@ class TodoList {
     }
   }
 
-  toggleItem(liElement) {
+  toggleItem(liElement: HTMLElement) {
     const checkedId = liElement.getAttribute('data-id');
     const elementIndex = this.todoObjectList.findIndex(
       item => item.id === Number(checkedId)
@@ -64,9 +88,9 @@ class TodoList {
       const liElement = document.createElement('li');
       const delBtn = document.createElement('button');
       liElement.innerHTML = item.todoText;
-      liElement.setAttribute('data-id', item.id);
+      liElement.setAttribute('data-id', String(item.id));
       this.ulElement.appendChild(liElement);
-      delBtn.setAttribute('data-id', item.id);
+      delBtn.setAttribute('data-id', String(item.id));
       delBtn.classList.add('far', 'fa-trash-alt');
       if (item.isDone === true) {
         liElement.classList.add('checked');
@@ -77,4 +101,4 @@ class TodoList {
 }
 
 // main
-const myTodoList = new TodoList('#myUL', '.addBtn');
+const myTodoList = new TodoList('#myUL', '.addBtn', '#myInput');
